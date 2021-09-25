@@ -15,6 +15,7 @@ First commit will be pretty lean, I will expand on it over the coming weeks
 # doing these enums like this is probably bad in the sense they are initialized and taking up memory...
 # especially if we port this to micropython
 
+
 # SPED bits 7,6
 class UARTOptions(enum.Enum):
     OPT_8_N_1 = bv.BitVector(bitlist=[0,0]) # default
@@ -33,6 +34,7 @@ class UARTOptions(enum.Enum):
             return UARTOptions.OPT_8_E_1
         elif b == UARTOptions.OPT_8_N_1_ALT.value:
             return UARTOptions.OPT_8_N_1_ALT
+
 
 # SPED bits 5,4,3
 class TTLBaudRates(enum.Enum):
@@ -64,6 +66,7 @@ class TTLBaudRates(enum.Enum):
         elif b == TTLBaudRates.BPS_115200.value:
             return TTLBaudRates.BPS_115200
 
+
 # SPED bits 2,1,0
 class AirDataRates(enum.Enum):
     BPS_300 = bv.BitVector(bitlist=[0,0,0])
@@ -94,9 +97,10 @@ class AirDataRates(enum.Enum):
         elif b == AirDataRates.BPS_19200_2.value:
             return AirDataRates.BPS_19200_2
 
+
 # OPT bit 7
 class FixedTransmissionEnable(enum.Enum):
-    FT_TRANSPARENT_TRANSMISSION = bv.BitVector(bitlist=[0]) #default
+    FT_TRANSPARENT_TRANSMISSION = bv.BitVector(bitlist=[0])  # default
     FT_FIXED_TRANSMISSION       = bv.BitVector(bitlist=[1])
 
     @staticmethod
@@ -106,10 +110,11 @@ class FixedTransmissionEnable(enum.Enum):
         elif b == FixedTransmissionEnable.FT_TRANSPARENT_TRANSMISSION.value:
             return FixedTransmissionEnable.FT_TRANSPARENT_TRANSMISSION
 
+
 # OPT bit 6
 class IODriveMode(enum.Enum):
     DRIVE_MODE_OPEN_COLLECTOR        = bv.BitVector(bitlist=[0])
-    DRIVE_MODE_PUSH_PULLS_PULL_UPS   = bv.BitVector(bitlist=[1]) # default
+    DRIVE_MODE_PUSH_PULLS_PULL_UPS   = bv.BitVector(bitlist=[1])  # default
 
     @staticmethod
     def get_from_value(b:bv.BitVector):
@@ -117,6 +122,7 @@ class IODriveMode(enum.Enum):
             return IODriveMode.DRIVE_MODE_PUSH_PULLS_PULL_UPS
         elif b == IODriveMode.DRIVE_MODE_OPEN_COLLECTOR.value:
             return IODriveMode.DRIVE_MODE_OPEN_COLLECTOR
+
 
 # OPT bits 5,4,3
 class WirelessWakeupTime(enum.Enum):
@@ -148,6 +154,7 @@ class WirelessWakeupTime(enum.Enum):
         elif b == WirelessWakeupTime.WAKE_UP_2000.value:
             return WirelessWakeupTime.WAKE_UP_2000
 
+
 # OPT bit 2
 class FECSwitch(enum.Enum):
     FEC_OFF = bv.BitVector(bitlist=[0])
@@ -159,6 +166,7 @@ class FECSwitch(enum.Enum):
             return FECSwitch.FEC_ON
         elif b == FECSwitch.FEC_OFF.value:
             return FECSwitch.FEC_OFF
+
 
 # OPT bits 1,0
 class TXPower(enum.Enum):
@@ -179,9 +187,11 @@ class TXPower(enum.Enum):
         elif b == TXPower.PWR_10DBM.value:
             return TXPower.PWR_10DBM
 
+
 # CHAN bits (full byte)
 class CommChannel(enum.Enum):
     pass
+
 
 # HEAD bits (full byte)
 class CommandHEAD(enum.Enum):
@@ -196,20 +206,21 @@ class CommandHEAD(enum.Enum):
        elif b == CommandHEAD.NO_SAVE_ON_PWR_DOWN.value:
            return CommandHEAD.NO_SAVE_ON_PWR_DOWN
 
+
 class E32Settings:
     # initialize everything to defaults
     def __init__(self):
-        self.__ADDH:bv.BitVector(intVal=0, size=8)
-        self.__ADDL:bv.BitVector(intVal=0, size=8)
+        self.__ADDH:bv.BitVector = bv.BitVector(intVal=0, size=8)
+        self.__ADDL:bv.BitVector = bv.BitVector(intVal=0, size=8)
         self.__TTLRate: TTLBaudRates = TTLBaudRates.BPS_9600
-        self.__UARTOpt:UARTOptions = UARTOptions.OPT_8_N_1
-        self.__AirDataRate:AirDataRates = AirDataRates.BPS_2400
-        self.__CHAN:int = 23
-        self.__FixedTransmissionEnable = FixedTransmissionEnable.FT_TRANSPARENT_TRANSMISSION
-        self.__IODriveMode:IODriveMode = IODriveMode.DRIVE_MODE_PUSH_PULLS_PULL_UPS
-        self.__WirelessWakeUpTime = WirelessWakeupTime.WAKE_UP_250
-        self.__FECSwitch:FECSwitch = FECSwitch.FEC_ON
-        self.__TXPwr:TXPower = TXPower.PWR_20DBM
+        self.__UARTOpt: UARTOptions = UARTOptions.OPT_8_N_1
+        self.__AirDataRate: AirDataRates = AirDataRates.BPS_2400
+        self.__CHAN: int = 23
+        self.__FixedTransmissionEnable: FixedTransmissionEnable = FixedTransmissionEnable.FT_TRANSPARENT_TRANSMISSION
+        self.__IODriveMode: IODriveMode = IODriveMode.DRIVE_MODE_PUSH_PULLS_PULL_UPS
+        self.__WirelessWakeUpTime: WirelessWakeupTime = WirelessWakeupTime.WAKE_UP_250
+        self.__FECSwitch: FECSwitch = FECSwitch.FEC_ON
+        self.__TXPwr: TXPower = TXPower.PWR_20DBM
 
     def parse_option_bytes(self, optbytes: list):
 
@@ -347,7 +358,7 @@ class E32Settings:
     # return a BitVector containing all of the bits for the CHAN byte
     # valid channels are between 0 and 31 (5 low bits)
     @staticmethod
-    def getChannelByte(channel: int):
+    def get_channel_byte(channel: int):
 
         # just constrain it to the upper or lower limits
         if channel < 0:
@@ -369,17 +380,16 @@ class E32Settings:
         return int(ret)
 
     @staticmethod
-    def testADDRConcat():
+    def test_addr_concat():
         # ADDH / ADDL
-        val = E32Settings.get_16bit_addr_int(bv.BitVector(bitlist=[1, 1, 1, 1, 1, 1, 1, 1]),
-                                                 bv.BitVector(bitlist=[1, 1, 1, 1, 1, 1, 1, 1]))
+        val = E32Settings.get_16bit_addr_int(bv.BitVector(bitlist=[1, 1, 1, 1, 1, 1, 1, 1]), bv.BitVector(bitlist=[1, 1, 1, 1, 1, 1, 1, 1]))
         assert val == 0xffff
 
     # accepts a list of parameters fetched from the module, instantiates this class,
     # attempts to parse the arguments then concatenate them back into a list of bytes again
     # also prints it for visual comparison
     @staticmethod
-    def testModule(params:list):
+    def test_settings_mutate(params:list):
         HEAD = bv.BitVector(intVal=params[0], size=8)
         ADDH = bv.BitVector(intVal=params[1], size=8)
         ADDL = bv.BitVector(intVal=params[2], size=8)
@@ -415,47 +425,60 @@ class E32Settings:
 
 ser = serial.Serial('COM18', baudrate=9600)
 
+
 # get the bytes for the parameters
-def readParams():
+def read_params():
     ser.write(bytearray([0xC1,0xC1,0xC1]))
     buf = ser.read(6)
     time.sleep(0.1)
     return buf
 
+
 # get the bytes for the version number of the module
-def readVer():
+def read_ver():
     ser.write(bytearray([0xC3, 0xC3, 0xC3]))
     buf = ser.read(4)
     time.sleep(0.1)
     return buf
 
+
 # trigger a module reset
-def resetModule():
+def reset_module():
     ser.write(bytearray([0xC4, 0xC4, 0xC4]))
     time.sleep(0.2)
 
+
 # write the parameters to the module
-def writeParams(params:bytearray):
+def write_params(params:bytearray):
     ser.write(bytearray)
     time.sleep(0.2)
-    pass
 
-def sendDataFixed(ADDH:int, ADDL:int, CHAN:int, payload:bytearray):
-    pass
+
+# the 16-bit address, the channel and the payload
+def send_data_fixed(ADDR: int, CHAN: int, payload: bytearray):
+
+    addr_bv = bv.BitVector(intVal=ADDR, size=16)
+    addr_h = addr_bv[0:8]
+    addr_l = addr_bv[8:]
+
+    buffer = bytearray([int(c_h), int(c_l)])
+    buffer.append(int(CHAN))
+    buffer.append(payload)
+
 
 print("Reading params:")
-ret_params = readParams()
+ret_params = read_params()
 print([hex(x) for x in list(ret_params)])
 retList = list(ret_params)
 
 print("Reading version:")
-ret_ver = readVer()
+ret_ver = read_ver()
 print([hex(x) for x in list(ret_ver)])
 
 print("Resetting module:")
 resetModule()
 
-E32Settings.testADDRConcat()
-E32Settings.testModule(ret_params)
+E32Settings.test_addr_concat()
+E32Settings.test_settings_mutate(ret_params)
 
 
